@@ -384,7 +384,7 @@ public class SystemCheckActivity extends Activity {
 			
 			if(i != numberChaberTmpCheck) {
 			
-//				SerialPort.Sleep(390000);
+				SerialPort.Sleep(390000);
 				
 				tmp = 0;
 				
