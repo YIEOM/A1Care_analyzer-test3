@@ -1,0 +1,366 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/engineerlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/title"
+        android:background="#00000000" />
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="128px"
+        android:layout_marginTop="20px"
+        android:src="@drawable/engineer_title" />
+            
+    <ImageView
+        android:id="@+id/device" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="520px"
+        android:layout_marginTop="12px" />
+    
+   	<TextView
+        android:id="@+id/timeText" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:typeface="sans"
+        android:textSize="24px"
+        android:textColor="#444444"
+        android:shadowColor="#7F000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="1.2"
+        android:layout_marginLeft="578px"
+        android:layout_marginTop="15px" />
+   		
+   	<Button
+        android:id="@+id/escBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="728px"
+        android:background="@drawable/esc_selector" />
+   	   	
+   	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="30px"
+        android:layout_marginTop="134px" >
+   	    
+   	    <Button
+	        android:id="@+id/lampBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/lamp_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="70px"
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="LAMP\nINTENSITY"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		
+   	</RelativeLayout>
+
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="182px"
+        android:layout_marginTop="134px" >
+   	    
+   	    <Button
+	        android:id="@+id/f535Btn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="27px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/abs57_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="85px"
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="535 FACTOR"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="335px"
+        android:layout_marginTop="134px" >
+   	    
+   	    <Button
+	        android:id="@+id/f660Btn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="27px"
+		    android:layout_centerHorizontal="true"
+		    android:src="@drawable/abs67_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="85px"
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="660 FACTOR"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="486px"
+        android:layout_marginTop="134px" >
+   	    
+   	     <Button
+	        android:id="@+id/collelationBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/cf_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="70px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="CORRELATION\nFACTOR"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>			
+   	
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="639px"
+        android:layout_marginTop="134px" >
+   	    
+   	    <Button
+	        android:id="@+id/adjustBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/af_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="70px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="ADJUSTMENT\nFACTOR"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+ 	
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="30px"
+        android:layout_marginTop="269px" >
+   	    
+   	    <Button
+	        android:id="@+id/tHbBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="20px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/thb_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="85px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="tHb FACTOR"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+ 	      	 
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="182px"
+        android:layout_marginTop="269px" >
+   	    
+   	     <Button
+	        android:id="@+id/tempBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/temperature_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="85px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="TEMPERATURE"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+ 	
+ 	<RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="335px"
+        android:layout_marginTop="269px" >
+   	    
+   	    <Button
+	        android:id="@+id/calibrationBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/cal_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="85px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+		    android:text="CALIBRATION"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+    
+    <RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="486px"
+        android:layout_marginTop="269px" >
+   	    
+   	    <Button
+	        android:id="@+id/aboutBtn"
+        	android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true"
+	        android:src="@drawable/about_icon" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="85px" 
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+        	android:text="ABOUT A1Care"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+   	
+    <RelativeLayout 
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_marginLeft="639px"
+        android:layout_marginTop="269px" >
+   	    
+   	    <Button
+	        android:id="@+id/deleteBtn"
+        	android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/systemsetting_btn_selector" />
+   	    
+		<ImageView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginTop="25px"
+		    android:layout_centerHorizontal="true" />
+	        
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+        	android:text="FILE DELETE"
+	        android:typeface="sans"
+	        android:textSize="18px"
+	        android:textColor="#242424" />
+		    
+   	</RelativeLayout>
+   	
+</RelativeLayout>
