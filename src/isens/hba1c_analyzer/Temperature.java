@@ -167,8 +167,9 @@ public class Temperature extends SerialPort {
 				tmpADC = 0;
 			}
 			
-			tmpV = ((double) 5/1024 * (tmpADC + 1));
-			ambTmp = (double) tmpV / 0.01;
+//			tmpV = ((double) 5/1024 * (tmpADC + 1));
+//			ambTmp = (double) tmpV / 0.01;
+			ambTmp = ((double) 0.10794 * tmpADC) - (double) 22.3658;
 		}
 		
 		public double getAmbTmp() {
