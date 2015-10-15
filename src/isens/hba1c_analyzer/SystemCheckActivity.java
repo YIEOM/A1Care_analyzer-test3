@@ -12,6 +12,7 @@ import isens.hba1c_analyzer.RunActivity.CartDump;
 import isens.hba1c_analyzer.RunActivity.CheckCoverError;
 import isens.hba1c_analyzer.Temperature.CellTmpRead;
 import isens.hba1c_analyzer.Model.AboutModel;
+import isens.hba1c_analyzer.Model.CaptureScreen;
 import isens.hba1c_analyzer.Model.ConvertModel;
 import isens.hba1c_analyzer.Model.Hardware;
 import isens.hba1c_analyzer.View.ConvertActivity;
@@ -26,8 +27,10 @@ import android.preference.PreferenceManager;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -73,68 +76,122 @@ public class SystemCheckActivity extends Activity {
 	
 	public TmpState tmpNumber;
 	
-	private double[] tmpInside = new double[13];
-	private String getTime[] = new String[6];
-	
 	private byte photoCheck;
 	public int checkError;
-	private boolean isRunMotorCheck, isRunTemperatureCheck;
+	
+	private Button snapshotBtn;
+	
+	private Activity activity;
+	private Context context;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-		overridePendingTransition(R.anim.fade, R.anim.hold);
 		setContentView(R.layout.systemcheck);
-				
+		
 		SystemCheckInit();
 	}
 	
+	public void setButtonId(Activity activity) {
+		
+		snapshotBtn = (Button)activity.findViewById(R.id.snapshotBtn);
+	}
+	
+	public void setButtonClick() {
+		
+		if(HomeActivity.ANALYZER_SW == HomeActivity.DEVEL) snapshotBtn.setOnTouchListener(mTouchListener);
+	}
+	
+	Button.OnTouchListener mTouchListener = new View.OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			
+			switch(event.getAction()) {
+			
+			case MotionEvent.ACTION_UP	:
+				
+				switch(v.getId()) {
+					
+				case R.id.snapshotBtn	:
+					WhichIntent(TargetIntent.SnapShot);
+					break;
+					
+				default	:
+					break;
+				}
+			
+				break;
+			}
+			
+			return false;
+		}
+	};
+	
 	public void SystemCheckInit() {
+		
+		activity = this;
+		context = this;
+		
+		setButtonId(activity);
+		setButtonClick();
 		
 		SystemAniStart();
 	
-		/* Serial communication start */
-		mSerialPort = new SerialPort();
-		mSerialPort.BoardSerialInit();
-		mSerialPort.BoardRxStart();
-		mSerialPort.PrinterSerialInit();
-		mSerialPort.BarcodeSerialInit();
-		mSerialPort.BarcodeRxStart();
-	
-		/* Timer start */
-		mTimerDisplay = new TimerDisplay();
-		mTimerDisplay.ActivityParm(this, R.id.systemchecklayout);
-		mTimerDisplay.TimerInit();
+		Intent itn = getIntent();
+		int state = itn.getIntExtra("System Check State", RunActivity.NORMAL_OPERATION);
 		
-		/* Barcode reader off */
-		mGpioPort = new GpioPort();
-		mGpioPort.TriggerHigh();
+		if(state != R.string.e221) {
 		
-		ParameterInit();
-		GetVersion mGetVersion = new GetVersion(this);
-		mGetVersion.start();
+			/* Serial communication start */
+			mSerialPort = new SerialPort();
+			mSerialPort.BoardSerialInit();
+			mSerialPort.BoardRxStart();
+			mSerialPort.PrinterSerialInit();
+			mSerialPort.BarcodeSerialInit();
+			mSerialPort.BarcodeRxStart();
 		
-		BrightnessInit();
-		VolumeInit();
-		
-		/* Temperature setting */
-		mTemperature = new Temperature(); // to test
-		mTemperature.TmpInit(); // to test
-		
-		/* TEST Mode */
-		if((HomeActivity.ANALYZER_SW == HomeActivity.DEVEL) || (HomeActivity.ANALYZER_SW == HomeActivity.DEMO)) {
+			/* Timer start */
+			mTimerDisplay = new TimerDisplay();
+			mTimerDisplay.ActivityParm(this, R.id.systemchecklayout);
+			mTimerDisplay.TimerInit();
+			
+			/* Barcode reader off */
+			mGpioPort = new GpioPort();
+			mGpioPort.TriggerHigh();
+			
+			ParameterInit();
+			GetVersion mGetVersion = new GetVersion(this);
+			mGetVersion.start();
+			
+			BrightnessInit();
+			VolumeInit();
+			
+			/* Temperature setting */
+			mTemperature = new Temperature(); // to test
+			mTemperature.TmpInit(); // to test
+			
+			/* TEST Mode */
+			if((HomeActivity.ANALYZER_SW == HomeActivity.DEVEL) || (HomeActivity.ANALYZER_SW == HomeActivity.DEMO)) {
 
-			WhichIntent(TargetIntent.Home);
-		}
-		
-		else {
-		
-			mErrorPopup = new ErrorPopup(this, this, R.id.systemchecklayout);
-				
-			SensorCheck SensorCheckObj = new SensorCheck();
-			SensorCheckObj.start();
-		
+				ChangeHome mChangeHome = new ChangeHome();
+				mChangeHome.start();
+			}
+			else {
+			
+				mErrorPopup = new ErrorPopup(this, this, R.id.systemchecklayout, null, 0);
+
+				SensorCheck SensorCheckObj = new SensorCheck();
+				SensorCheckObj.start();			
+			}
+			
+		} else {
+			
+			mTemperature = new Temperature();
+			
+			InsideTmpCheck mInsideTmpCheck = new InsideTmpCheck();
+			mInsideTmpCheck.start();
 		}
 	}
 	
@@ -149,7 +206,7 @@ public class SystemCheckActivity extends Activity {
 			GpioPort.DoorActState = true;
 			GpioPort.CartridgeActState = true;
 			
-			SerialPort.Sleep(2000);
+			SerialPort.Sleep(5000);
 			
 			while((ActionActivity.DoorCheckFlag != 1) || (ActionActivity.CartridgeCheckFlag != 0)) {
 				
@@ -271,8 +328,8 @@ public class SystemCheckActivity extends Activity {
 					
 					if(HomeActivity.ANALYZER_SW == HomeActivity.NORMAL) {
 					
-						TemperatureCheck TemperatureCheckObj = new TemperatureCheck();
-						TemperatureCheckObj.start();
+						ChamberTmpCheck mChamberTmpCheck = new ChamberTmpCheck();
+						mChamberTmpCheck.start();
 					
 					} else WhichIntent(TargetIntent.Home);
 					break;
@@ -326,7 +383,7 @@ public class SystemCheckActivity extends Activity {
 			switch(checkError) {
 				
 			case R.string.e322		:
-				mErrorPopup.ErrorDisplay(R.string.w004);					
+				mErrorPopup.ErrorDisplay(R.string.w001);					
 				CheckCoverError mCheckCoverError = new CheckCoverError();
 				mCheckCoverError.start();
 				break;
@@ -337,7 +394,7 @@ public class SystemCheckActivity extends Activity {
 		}
 	}
 	
-	public class TemperatureCheck extends Thread {
+	public class ChamberTmpCheck extends Thread {
 		
 		public void run() {
 			
@@ -383,37 +440,44 @@ public class SystemCheckActivity extends Activity {
 			}
 			
 			if(i != numberChaberTmpCheck) {
-			
-				SerialPort.Sleep(390000);
 				
-				tmp = 0;
+				SerialPort.Sleep(387000);
 				
-				mTemperature.AmbTmpRead();
+				InsideTmpCheck mInsideTmpCheck = new InsideTmpCheck();
+				mInsideTmpCheck.start();
 				
-				for(i = 0; i < NUMBER_AMBIENT_TMP_CHECK; i++) {
-					
-					tmpInside[i] = mTemperature.AmbTmpRead();
-					
-					tmp += tmpInside[i];
-					
-					SerialPort.Sleep(10000);
-				}
-				
-				tmpInside[12] = tmp/NUMBER_AMBIENT_TMP_CHECK;
-				
-				if((Temperature.MinAmbTmp < tmp/NUMBER_AMBIENT_TMP_CHECK) && (tmp/NUMBER_AMBIENT_TMP_CHECK < Temperature.MaxAmbTmp)) {
-					
-					WhichIntent(TargetIntent.Home);
-				
-				} else {
-					
-					checkError = R.string.e221;
-					WhichIntent(TargetIntent.Home);
-				}
-
 			} else {
 				
 				checkError = R.string.e222;
+				WhichIntent(TargetIntent.Home);
+			}
+		}
+	}
+	
+	public class InsideTmpCheck extends Thread {
+		
+		public void run() {
+			
+			int i;
+			double tmp = 0;
+			
+			mTemperature.AmbTmpRead();
+			
+			for(i = 0; i < NUMBER_AMBIENT_TMP_CHECK; i++) {
+				
+				tmp += mTemperature.AmbTmpRead();
+				
+				SerialPort.Sleep(10000);
+			}
+			
+			if((Temperature.MinAmbTmp < tmp/NUMBER_AMBIENT_TMP_CHECK) && (tmp/NUMBER_AMBIENT_TMP_CHECK < Temperature.MaxAmbTmp)) {
+				
+				checkError = RunActivity.NORMAL_OPERATION;
+				WhichIntent(TargetIntent.Home);
+			
+			} else {
+				
+				checkError = R.string.e221;
 				WhichIntent(TargetIntent.Home);
 			}
 		}
@@ -671,52 +735,37 @@ public class SystemCheckActivity extends Activity {
 		}
 	}
 	
-	public void GetCurrTime() { // getting the current date and time
+	public class ChangeHome extends Thread {
 		
-		getTime[1] = TimerDisplay.rTime[1];
-		getTime[2] = TimerDisplay.rTime[2];
-		getTime[3] = TimerDisplay.rTime[3];		
-		if(TimerDisplay.rTime[4].length() != 2) getTime[4] = "0" + TimerDisplay.rTime[4];
-		else getTime[4] = TimerDisplay.rTime[4];
-		getTime[5] = TimerDisplay.rTime[5];
-	}
+		public void run() {
+			
+			SerialPort.Sleep(5000);
+			
+			WhichIntent(TargetIntent.Home);
+		}
+	}	
 	
 	public void WhichIntent(TargetIntent Itn) { // Activity conversion
-		
-		GetCurrTime();
 		
 		Intent nextIntent = null;
 		
 		switch(Itn) {
 		
-//		case Home		:				
-//			nextIntent = new Intent(getApplicationContext(), HomeActivity.class);
-//			nextIntent.putExtra("System Check State", checkError);
-//			break;
-		
-		case Home		:
-			nextIntent = new Intent(getApplicationContext(), FileSaveActivity.class);
+		case Home		:				
+			nextIntent = new Intent(getApplicationContext(), HomeActivity.class);
 			nextIntent.putExtra("System Check State", checkError);
-			nextIntent.putExtra("Month", getTime[1]);
-			nextIntent.putExtra("Day", getTime[2]);
-			nextIntent.putExtra("AmPm", getTime[3]);
-			nextIntent.putExtra("Hour", getTime[4]);
-			nextIntent.putExtra("Minute", getTime[5]);
-			nextIntent.putExtra("Inside Temp0", tmpInside[0]);
-			nextIntent.putExtra("Inside Temp1", tmpInside[1]);
-			nextIntent.putExtra("Inside Temp2", tmpInside[2]);
-			nextIntent.putExtra("Inside Temp3", tmpInside[3]);
-			nextIntent.putExtra("Inside Temp4", tmpInside[4]);
-			nextIntent.putExtra("Inside Temp5", tmpInside[5]);
-			nextIntent.putExtra("Inside Temp6", tmpInside[6]);
-			nextIntent.putExtra("Inside Temp7", tmpInside[7]);
-			nextIntent.putExtra("Inside Temp8", tmpInside[8]);
-			nextIntent.putExtra("Inside Temp9", tmpInside[9]);
-			nextIntent.putExtra("Inside Temp10", tmpInside[10]);
-			nextIntent.putExtra("Inside Temp11", tmpInside[11]);
-			nextIntent.putExtra("Inside Temp12", tmpInside[12]);
 			break;
 		
+		case SnapShot	:
+			CaptureScreen mCaptureScreen = new CaptureScreen();
+			byte[] bitmapBytes = mCaptureScreen.captureScreen(activity);
+			
+			nextIntent = new Intent(context, FileSaveActivity.class);
+			nextIntent.putExtra("snapshot", true);
+			nextIntent.putExtra("datetime", TimerDisplay.rTime);
+			nextIntent.putExtra("bitmap", bitmapBytes);
+			break;	
+			
 		default		:	
 			break;			
 		}

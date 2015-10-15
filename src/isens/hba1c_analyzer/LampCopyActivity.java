@@ -71,8 +71,6 @@ public class LampCopyActivity extends Activity {
 	
 	public static boolean isCancel;
 	
-	public boolean btnState = false;
-	
 	public double f535nmValue[] = new double[200];
 	
 	public int numofSample = 0;
@@ -159,32 +157,26 @@ public class LampCopyActivity extends Activity {
 			
 			case MotionEvent.ACTION_UP	:
 				
-				if(!btnState) {
-
-					btnState = true;
+				switch(v.getId()) {
+			
+				case R.id.backBtn	:
+					WhichIntent(TargetIntent.Engineer);
+					break;
 					
-					switch(v.getId()) {
+				case R.id.runBtn	:
+					unenabledAllBtn();
+					TestStart();
+					break;
 				
-					case R.id.backBtn	:
-						WhichIntent(TargetIntent.Engineer);
-						break;
-						
-					case R.id.runBtn	:
-						setButtonState(R.id.runBtn, false);
-						TestStart();
-						break;
+				case R.id.cancelBtn	:
+					setButtonState(R.id.cancelBtn, false);
+					cancelTest();
+					break;
 					
-					case R.id.cancelBtn	:
-						setButtonState(R.id.cancelBtn, false);
-						cancelTest();
-						break;
-						
-					default	:
-						break;
-					}
+				default	:
+					break;
 				}
-
-				btnState = false;
+				
 				break;
 				
 			case MotionEvent.ACTION_DOWN	:
@@ -217,6 +209,28 @@ public class LampCopyActivity extends Activity {
 			return false;
 		}
 	};
+	
+	public void enabledAllBtn() {
+
+		setButtonState(R.id.backBtn, true);
+		setButtonState(R.id.runBtn, true);
+		setButtonState(R.id.cancelBtn, true);
+		setButtonState(R.id.darkBtn, true);
+		setButtonState(R.id.f535nmBtn, true);
+		setButtonState(R.id.f660nmBtn, true);
+		setButtonState(R.id.f750nmBtn, true);
+	}
+	
+	public void unenabledAllBtn() {
+		
+		setButtonState(R.id.backBtn, false);
+		setButtonState(R.id.runBtn, false);
+		setButtonState(R.id.cancelBtn, false);
+		setButtonState(R.id.darkBtn, false);
+		setButtonState(R.id.f535nmBtn, false);
+		setButtonState(R.id.f660nmBtn, false);
+		setButtonState(R.id.f750nmBtn, false);
+	}
 	
 	public void LampInit() {
 		
@@ -284,13 +298,6 @@ public class LampCopyActivity extends Activity {
 		isCancel = false;
 		isNormal = true;
 		isMeasured = false;
-		
-		setButtonState(R.id.backBtn, false);
-		setButtonState(R.id.runBtn, false);
-		setButtonState(R.id.darkBtn, false);
-		setButtonState(R.id.f535nmBtn, false);
-		setButtonState(R.id.f660nmBtn, false);
-		setButtonState(R.id.f750nmBtn, false);
 		
 		CancelTest mCancelTest = new CancelTest();
 		mCancelTest.start();
@@ -392,7 +399,7 @@ public class LampCopyActivity extends Activity {
 					runOnUiThread(new Runnable(){
 						public void run() {
 
-							cancelBtn.setEnabled(true);
+							setButtonState(R.id.cancelBtn, true);
 						}
 					});
 				}
@@ -400,12 +407,10 @@ public class LampCopyActivity extends Activity {
 			break;
 			
 		default	:
-			mErrorPopup = new ErrorPopup(activity, context, layout);
+			mErrorPopup = new ErrorPopup(activity, context, layout, null, 0);
 			mErrorPopup.ErrorBtnDisplay(checkError);
 			break;
 		}
-		
-		btnState = false;
 	}
 	
 	public class PhotoMeasure extends Thread {
@@ -457,7 +462,7 @@ public class LampCopyActivity extends Activity {
 				break;
 				
 			default	:
-				mErrorPopup = new ErrorPopup(activity, context, layoutid);
+				mErrorPopup = new ErrorPopup(activity, context, layoutid, null, 0);
 				mErrorPopup.ErrorBtnDisplay(checkError);
 				break;
 			}
@@ -692,8 +697,6 @@ public class LampCopyActivity extends Activity {
 						setButtonState(R.id.f535nmBtn, true);
 						setButtonState(R.id.f660nmBtn, true);
 						setButtonState(R.id.f750nmBtn, true);
-						
-						btnState = false;
 					}
 				});
 			}

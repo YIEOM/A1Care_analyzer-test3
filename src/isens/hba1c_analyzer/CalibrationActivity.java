@@ -151,34 +151,31 @@ public class CalibrationActivity extends Activity{
 			
 			case MotionEvent.ACTION_UP	:
 				
-				if(!btnState) {
-
-					btnState = true;
-
-					switch(v.getId()) {
+				unenabledAllBtn();
 				
-					case R.id.backBtn	:
-						WhichIntent(TargetIntent.Engineer);
-						break;
-						
-					case R.id.blankbtn	:
-						BlankMode();
-						break;
+				switch(v.getId()) {
+			
+				case R.id.backBtn	:
+					WhichIntent(TargetIntent.Engineer);
+					break;
 					
-					case R.id.quickbtn	:
-						QuickMode();
-						break;
-					
-					case R.id.fullbtn	:
-						FullMode();
-						break;
-					
-					default	:
-						break;
-					}
-					
+				case R.id.blankbtn	:
+					BlankMode();
+					break;
+				
+				case R.id.quickbtn	:
+					QuickMode();
+					break;
+				
+				case R.id.fullbtn	:
+					FullMode();
+					break;
+				
+				default	:
 					break;
 				}
+				
+				break;
 			}
 			
 			return false;
@@ -199,8 +196,6 @@ public class CalibrationActivity extends Activity{
 		setButtonState(R.id.blankbtn, false);
 		setButtonState(R.id.quickbtn, false);
 		setButtonState(R.id.fullbtn, false);
-		
-		btnState = false;
 	}
 	
 	public void CalibrationInit() {
@@ -1289,7 +1284,6 @@ public class CalibrationActivity extends Activity{
 	
 	public synchronized double AbsorbanceMeasure() { // Absorbance measurement
 		
-		int time = 0;
 		String rawValue;
 		double douValue = 0;
 		while(TimerDisplay.RXBoardFlag) SerialPort.Sleep(10);
@@ -1427,8 +1421,7 @@ public class CalibrationActivity extends Activity{
 			   dev[] = new double[3],
 			   std, 
 			   sum, 
-			   avg, 
-			   res;
+			   avg;
 		int idx = 0;
 		
 		abs[0] = RunActivity.Step1stAbsorb1[0] - RunActivity.Step1stAbsorb1[2];

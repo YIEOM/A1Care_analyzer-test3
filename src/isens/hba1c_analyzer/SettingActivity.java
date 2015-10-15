@@ -5,11 +5,13 @@ import java.util.TimerTask;
 
 import isens.hba1c_analyzer.CalibrationActivity.TargetMode;
 import isens.hba1c_analyzer.HomeActivity.TargetIntent;
+import isens.hba1c_analyzer.Model.CaptureScreen;
 import isens.hba1c_analyzer.View.FunctionalTestActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,20 +27,27 @@ public class SettingActivity extends Activity {
 	public TimerDisplay mTimerDisplay;
 	public OperatorPopup mOperatorController;
 	
+	public Activity activity;
+	private Context context;
+	
 	public Button systemBtn,
 				  dataBtn,
 				  operatorBtn,
 				  functionalBtn,
 				  backIcon;
 	
-	public boolean btnState = false;
-	
 	public Handler handler = new Handler();
 	public TimerTask OneHundredmsPeriod;
 	public Timer timer;
 	
+	private TextView titleText,
+					 systemSettingText,
+					 operatorSettingText,
+					 functionalTestText;
+	
 	public Button cheat1Btn,
-				  cheat2Btn;
+				  cheat2Btn,
+				  snapshotBtn;
 
 	public Button btn;
 	
@@ -59,14 +68,35 @@ public class SettingActivity extends Activity {
 		SettingInit();
 	}
 	
-	public void setButtonId() {
+	private void setTextId() {
 		
-		systemBtn = (Button)findViewById(R.id.systembtn);
-		operatorBtn = (Button)findViewById(R.id.operatorbtn);
-		functionalBtn = (Button)findViewById(R.id.functionalbtn);
-		backIcon = (Button)findViewById(R.id.backicon);
-		cheat1Btn = (Button)findViewById(R.id.cheat1btn);
-		cheat2Btn = (Button)findViewById(R.id.cheat2btn);
+		titleText = (TextView) findViewById(R.id.titleText);
+		systemSettingText = (TextView) findViewById(R.id.systemSettingText);
+		operatorSettingText = (TextView) findViewById(R.id.operatorSettingText);
+		functionalTestText = (TextView) findViewById(R.id.functionalTestText);
+	}
+	
+	private void setText() {
+		
+		titleText.setPaintFlags(titleText.getPaintFlags()|Paint.FAKE_BOLD_TEXT_FLAG);
+		titleText.setText(R.string.settingtitle);
+		systemSettingText.setPaintFlags(systemSettingText.getPaintFlags()|Paint.FAKE_BOLD_TEXT_FLAG);
+		systemSettingText.setText(R.string.systemsetting);
+		operatorSettingText.setPaintFlags(operatorSettingText.getPaintFlags()|Paint.FAKE_BOLD_TEXT_FLAG);
+		operatorSettingText.setText(R.string.operatorsetting);
+		functionalTestText.setPaintFlags(functionalTestText.getPaintFlags()|Paint.FAKE_BOLD_TEXT_FLAG);
+		functionalTestText.setText(R.string.functionaltest);
+	}
+	
+	public void setButtonId(Activity activity) {
+		
+		systemBtn = (Button)activity.findViewById(R.id.systembtn);
+		operatorBtn = (Button)activity.findViewById(R.id.operatorbtn);
+		functionalBtn = (Button)activity.findViewById(R.id.functionalbtn);
+		backIcon = (Button)activity.findViewById(R.id.backicon);
+		cheat1Btn = (Button)activity.findViewById(R.id.cheat1btn);
+		cheat2Btn = (Button)activity.findViewById(R.id.cheat2btn);
+		snapshotBtn = (Button)activity.findViewById(R.id.snapshotBtn);
 	}
 	
 	public void setButtonClick() {
@@ -77,6 +107,7 @@ public class SettingActivity extends Activity {
 		backIcon.setOnTouchListener(mTouchListener);
 		cheat1Btn.setOnTouchListener(mTouchListener);
 		cheat2Btn.setOnTouchListener(mTouchListener);
+		if(HomeActivity.ANALYZER_SW == HomeActivity.DEVEL) snapshotBtn.setOnTouchListener(mTouchListener);
 	}
 	
 	public void setButtonState(int btnId, boolean state, Activity activity) {
@@ -92,68 +123,61 @@ public class SettingActivity extends Activity {
 			switch(event.getAction()) {
 			
 			case MotionEvent.ACTION_UP	:
+				unenabledAllBtn(activity);
 				
-				if(!btnState) {
-
-					btnState = true;
-					
-					switch(v.getId()) {
+				switch(v.getId()) {
 				
-					case R.id.systembtn		:
-						TakeOffBtn();
-						WhichIntent(TargetIntent.SystemSetting);
-						break;
-						
-					case R.id.operatorbtn	:
-						TakeOffBtn();
-						WhichIntent(TargetIntent.OperatorSetting);
-						break;
+				case R.id.systembtn		:
+					TakeOffBtn();
+					WhichIntent(activity, context, TargetIntent.SystemSetting);
+					break;
 					
-					case R.id.functionalbtn	:
-						TakeOffBtn();
-						WhichIntent(TargetIntent.FunctionalTest);
-						break;
+				case R.id.operatorbtn	:
+					TakeOffBtn();
+					WhichIntent(activity, context, TargetIntent.OperatorSetting);
+					break;
+				
+				case R.id.functionalbtn	:
+					TakeOffBtn();
+					WhichIntent(activity, context, TargetIntent.FunctionalTest);
+					break;
+				
+				case R.id.backicon	:
+					WhichIntent(activity, context, TargetIntent.Home);
+					break;
 					
-					case R.id.backicon	:
-						WhichIntent(TargetIntent.Home);
-						break;
-						
-					case R.id.cheat1btn	:
-						Cheat1stModeStart();
-						btnState = false;
-						break;
+				case R.id.cheat1btn	:
+					Cheat1stModeStart();
+					enabledAllBtn(activity);
+					break;
+				
+				case R.id.cheat2btn	:
+					TakeOffBtn();
+					enabledAllBtn(activity);
+					break;
 					
-					case R.id.cheat2btn	:
-						TakeOffBtn();
-						btnState = false;
-						break;
-						
-					default	:
-						break;
-					}
+				case R.id.snapshotBtn		:
+					WhichIntent(activity, context, TargetIntent.SnapShot);
+					break;
+					
+				default	:
+					break;
 				}
 			
 				break;
 				
 			case MotionEvent.ACTION_DOWN	:
-				
-				if(!btnState) {
-
-					btnState = true;
-					
-					switch(v.getId()) {
-				
-					case R.id.cheat2btn	:
-						PressedBtn();
-						break;
-						
-					default	:
-						break;
-					}
-					
-					btnState = false;
-				}
+									
+				switch(v.getId()) {
 			
+				case R.id.cheat2btn	:
+					PressedBtn();
+					break;
+					
+				default	:
+					break;
+				}
+		
 				break;
 			}
 			
@@ -161,13 +185,41 @@ public class SettingActivity extends Activity {
 		}
 	};
 	
+	public void enabledAllBtn(Activity activity) {
+
+		setButtonState(R.id.systembtn, true, activity);
+		setButtonState(R.id.operatorbtn, true, activity);
+		setButtonState(R.id.functionalbtn, true, activity);
+		setButtonState(R.id.backicon, true, activity);
+		setButtonState(R.id.cheat1btn, true, activity);
+		setButtonState(R.id.cheat2btn, true, activity);
+	}
+	
+	public void unenabledAllBtn(Activity activity) {
+		
+		setButtonState(R.id.systembtn, false, activity);
+		setButtonState(R.id.operatorbtn, false, activity);
+		setButtonState(R.id.functionalbtn, false, activity);
+		setButtonState(R.id.backicon, false, activity);
+		setButtonState(R.id.cheat1btn, false, activity);
+		setButtonState(R.id.cheat2btn, false, activity);
+	}
+	
 	public void SettingInit() {
 		
-		setButtonId();
-		setButtonClick();
+		activity = this;
+		context = this;
+		
+		setTextId();
+		setText();
+		setButtonId(activity);
 		
 		mTimerDisplay = new TimerDisplay();
 		mTimerDisplay.ActivityParm(this, R.id.settinglayout);
+		
+		SerialPort.Sleep(500);
+		
+		setButtonClick();
 	}
 	
 	public void PressedBtn() {
@@ -182,7 +234,7 @@ public class SettingActivity extends Activity {
 	
 	public void TakeOffBtn() {
 		
-		CheatModeStop(this);
+		CheatModeStop(this, isCheat);
 	}
 	
 	public void TimerInit() {
@@ -236,10 +288,12 @@ public class SettingActivity extends Activity {
 			
 			mOperatorController = new OperatorPopup(this, this, R.id.settinglayout);
 			mOperatorController.EngineerLoginDisplay();
+			
+			unenabledAllBtn(activity);
 		}
 	}
 	
-	public void CheatModeStop(Activity activity) {
+	public void CheatModeStop(Activity activity, boolean isCheat) {
 		
 		if(isC1Pressed) {
 			
@@ -262,7 +316,7 @@ public class SettingActivity extends Activity {
 		
 		if(cnt == 50) {
 			
-			CheatModeStop(this);
+			CheatModeStop(this, isCheat);
 		}
 	}
 	
@@ -282,7 +336,7 @@ public class SettingActivity extends Activity {
 		}).start();
 	}
 
-	public void WhichIntent(TargetIntent Itn) { // Activity conversion
+	public void WhichIntent(Activity activity, Context context, TargetIntent Itn) { // Activity conversion
 		
 		Intent nextIntent = null;
 		
@@ -296,16 +350,22 @@ public class SettingActivity extends Activity {
 			nextIntent = new Intent(getApplicationContext(), SystemSettingActivity.class);
 			break;
 			
-		case DataSetting		:
-			nextIntent = new Intent(getApplicationContext(), DataSettingActivity.class);
-			break;			
-			
 		case OperatorSetting	:		
 			nextIntent = new Intent(getApplicationContext(), OperatorSettingActivity.class);
 			break;
 			
 		case FunctionalTest	:		
 			nextIntent = new Intent(getApplicationContext(), FunctionalTestActivity.class);
+			break;
+			
+		case SnapShot	:
+			CaptureScreen mCaptureScreen = new CaptureScreen();
+			byte[] bitmapBytes = mCaptureScreen.captureScreen(activity);
+			
+			nextIntent = new Intent(context, FileSaveActivity.class);
+			nextIntent.putExtra("snapshot", true);
+			nextIntent.putExtra("datetime", TimerDisplay.rTime);
+			nextIntent.putExtra("bitmap", bitmapBytes);
 			break;
 			
 		default		:	
