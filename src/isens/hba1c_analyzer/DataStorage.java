@@ -102,7 +102,7 @@ public class DataStorage extends Activity {
 				file.createNewFile();
 			}
 			
-			FileOutputStream fos = new FileOutputStream(file, false);
+			FileOutputStream fos = new FileOutputStream(file, true);
 			
 			fos.write(sData1.toString().getBytes());
 			fos.write("\t".getBytes());
